@@ -1,0 +1,505 @@
+/* 
+  =========================================
+  DESIGN TOKEN & THEME SYSTEM (VOLUME 13)
+  =========================================
+  This file exposes all design tokens as CSS custom properties,
+  supports six beautiful theme variants, implements accessibility settings,
+  and maps every token category into Tailwind CSS v4 using the @theme directive.
+*/
+
+:root {
+  /* -------------------------------------
+     1. DEFAULT THEME: CLASSIC LIBRARY
+     ------------------------------------- */
+  --paper-bg: #2e1d13;              /* Rich mahogany wood/leather desk */
+  --paper-surface: #fdfaf2;         /* Warm premium ivory parchment page */
+  --paper-surface-dim: #f6f1e5;     /* Slightly aged page edge/margins */
+  --paper-border: #e8dfcb;          /* Realistically shaded page edge */
+  --paper-border-dim: #e0d4c3;      /* Faint pencil-thin ruled lines */
+
+  --ink-primary: #1f1a16;           /* Deep obsidian/sepia-black ink */
+  --ink-secondary: #4a3e35;         /* Warm dark graphite charcoal */
+  --ink-muted: #7a6b5c;             /* Faded walnut ink or slate brown */
+  --ink-light: #a89b8c;             /* Very faint pencil outline/placeholder */
+
+  --accent-red: #8f2d1b;            /* Fountain pen crimson highlight */
+  --accent-gold: #c29738;           /* Vintage burnished ribbon gold */
+  --accent-green: #2c5e43;          /* Dark library desk blotter green */
+  --accent-blue: #1b4f72;           /* Navy fountain pen ink */
+
+  /* Sticky Notes */
+  --sticky-yellow-bg: #fffbeb;
+  --sticky-yellow-ink: #78350f;
+  --sticky-yellow-border: #fde68a;
+
+  --sticky-pink-bg: #fdf2f8;
+  --sticky-pink-ink: #9d174d;
+  --sticky-pink-border: #fbcfe8;
+
+  --sticky-blue-bg: #f0f9ff;
+  --sticky-blue-ink: #0369a1;
+  --sticky-blue-border: #bae6fd;
+
+  --sticky-green-bg: #f0fdf4;
+  --sticky-green-ink: #15803d;
+  --sticky-green-border: #bbf7d0;
+
+  /* Status Colors (Classic Bookish Palette) */
+  --status-success: #2c5e43;
+  --status-success-bg: #ecfdf5;
+  --status-success-border: #a7f3d0;
+
+  --status-error: #8f2d1b;
+  --status-error-bg: #fef2f2;
+  --status-error-border: #fecaca;
+
+  --status-warning: #9a6a15;
+  --status-warning-bg: #fffbeb;
+  --status-warning-border: #fef3c7;
+
+  --status-info: #1b4f72;
+  --status-info-bg: #f0f9ff;
+  --status-info-border: #bae6fd;
+
+  /* Leather Cover Theme / Auth Screen Specific Tokens */
+  --leather-bg-dark: #1f0f07;
+  --leather-bg-light: #43210f;
+  --leather-border-gold: #e5c158;
+  --leather-recessed-bg: #140904;
+
+  /* -------------------------------------
+     2. FONTS, RADII, MOTION & OTHER SYSTEM CONSTANTS
+     ------------------------------------- */
+  --font-family-serif: 'Cormorant Garamond', serif;
+  --font-family-sans: 'Inter', sans-serif;
+  --font-family-handwritten: 'La Belle Aurore', cursive;
+  --font-family-playfair: 'Playfair Display', serif;
+
+  /* Typography Sizes (Standard Scale) */
+  --size-display: 3rem;
+  --size-heading: 2rem;
+  --size-chapter: 1.5rem;
+  --size-body: 1.125rem;            /* 18px body copy for high luxury readability */
+  --size-caption: 0.875rem;
+  --size-notes: 1.25rem;
+  --size-signature: 1.5rem;
+  --size-button: 0.875rem;
+  --size-label: 0.75rem;
+  --size-input: 1rem;
+
+  /* Spacing (8px Base System) */
+  --space-1: 0.5rem;   /* 8px */
+  --space-2: 1rem;     /* 16px */
+  --space-3: 1.5rem;   /* 24px */
+  --space-4: 2rem;     /* 32px */
+  --space-5: 2.5rem;   /* 40px */
+  --space-6: 3rem;     /* 48px */
+  --space-7: 3.5rem;   /* 56px */
+  --space-8: 4rem;     /* 64px */
+  --space-9: 4.5rem;   /* 72px */
+  --space-10: 5rem;    /* 80px */
+  --space-11: 5.5rem;  /* 88px */
+  --space-12: 6rem;    /* 96px */
+  --space-13: 6.5rem;  /* 104px */
+  --space-14: 7rem;    /* 112px */
+  --space-15: 7.5rem;  /* 120px */
+  --space-16: 8rem;    /* 128px */
+
+  /* Radius System */
+  --radius-sm: 0.125rem;            /* 2px */
+  --radius-md: 0.25rem;             /* 4px */
+  --radius-lg: 0.5rem;              /* 8px */
+  --radius-paper: 0.375rem;         /* 6px (Micro rounded paper corner) */
+  --radius-book: 1.25rem;           /* 20px (Tactile book spine and rounded binding edges) */
+
+  /* Shadows (Fully Realistic Depth) */
+  --shadow-paper-val: 0 1px 3px rgba(0,0,0,0.1), 0 4px 6px -1px rgba(0,0,0,0.05), 0 10px 15px -3px rgba(0,0,0,0.03);
+  --shadow-page-val: inset 5px 0 10px -5px rgba(0,0,0,0.15), inset -5px 0 10px -5px rgba(0,0,0,0.15);
+  --shadow-book-val: 0 10px 25px -5px rgba(0,0,0,0.35), 0 8px 10px -6px rgba(0,0,0,0.3), 0 25px 50px -12px rgba(0,0,0,0.45);
+  --shadow-sticky-val: 2px 3px 8px rgba(0,0,0,0.15), 0 8px 16px -4px rgba(0,0,0,0.1);
+  --shadow-hover-val: 0 20px 25px -5px rgba(0,0,0,0.2), 0 10px 10px -5px rgba(0,0,0,0.08);
+  --shadow-depth-val: inset 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+
+  /* Motion (Physical Properties) */
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --ease-paper: cubic-bezier(0.25, 0.8, 0.25, 1);     /* Smooth sliding glide */
+  --ease-book: cubic-bezier(0.645, 0.045, 0.355, 1);  /* Heavy, structural page flip */
+  --ease-spring: cubic-bezier(0.43, 1.95, 0.02, 0.74); /* Physics-based organic bounce */
+
+  /* Layering Z-Index */
+  --z-base: 0;
+  --z-page: 10;
+  --z-sticky: 9999;
+  --z-dialog: 10000;
+  --z-modal: 10100;
+  --z-tooltip: 10500;
+
+  /* Focus Ring */
+  --focus-ring-outline: 2px solid var(--accent-gold);
+  --focus-ring-offset: 2px;
+}
+
+/* -------------------------------------
+   3. THEME OVERRIDES (SECTION 11)
+   ------------------------------------- */
+
+/* CLASSIC LIBRARY (Data Selector Override matching default) */
+[data-theme="classic-library"] {
+  --paper-bg: #2e1d13;
+  --paper-surface: #fdfaf2;
+  --paper-surface-dim: #f6f1e5;
+  --paper-border: #e8dfcb;
+  --paper-border-dim: #e0d4c3;
+  --ink-primary: #1f1a16;
+  --ink-secondary: #4a3e35;
+  --ink-muted: #7a6b5c;
+  --ink-light: #a89b8c;
+  --accent-red: #8f2d1b;
+  --accent-gold: #c29738;
+  --accent-green: #2c5e43;
+  --accent-blue: #1b4f72;
+}
+
+/* VINTAGE JOURNAL (Sepia tones, weathered yellowed paper, iron gall ink) */
+[data-theme="vintage-journal"] {
+  --paper-bg: #46382e;              /* Deep weathered dark walnut wood desk */
+  --paper-surface: #f1e6cf;         /* Tea-stained, yellowed aged parchment */
+  --paper-surface-dim: #e5d7bc;     /* Distressed, stained margins */
+  --paper-border: #d0be9b;          /* Soft weathered paper edge */
+  --paper-border-dim: #c7b491;      /* Faded sepia rule lines */
+  --ink-primary: #2b221a;           /* Ancient dark iron gall ink */
+  --ink-secondary: #56473b;         /* Faded walnut brown ink */
+  --ink-muted: #827163;             /* Aging scribe gray-brown */
+  --ink-light: #ac9c8e;             /* Smudged slate charcoal / pencil draft */
+  --accent-red: #7c2012;            /* Dried oxblood sealing wax red */
+  --accent-gold: #ad8021;           /* Tarnished antique gold brass */
+  --accent-green: #34523b;          /* Weathered moss botanical green */
+  --accent-blue: #1e3d4a;           /* Oxidized slate blue */
+}
+
+/* NIGHT READING (Feels like reading an old book at night — dark brown paper, warm highlights, soft amber lighting, never pure black) */
+[data-theme="night-reading"] {
+  --paper-bg: #1e130c;              /* Deep mahogany study surroundings at night */
+  --paper-surface: #2d1d15;         /* Soft dark warm brown aged paper page */
+  --paper-surface-dim: #251711;     /* Shaded page edge */
+  --paper-border: #442d20;          /* Warm binding crease */
+  --paper-border-dim: #382419;      /* Soft graphite lines */
+  --ink-primary: #f6ebd8;           /* Cozy glowing cream text, easy on the eyes */
+  --ink-secondary: #d3beaf;         /* Soft warm-tinted wood dust */
+  --ink-muted: #9c8474;             /* Dimmed moonlight graphite */
+  --ink-light: #6e584a;             /* Aged pen charcoal */
+  --accent-red: #e05e46;            /* Warm afternoon glowing red stamp */
+  --accent-gold: #e3a835;           /* Rich candlelight warm amber */
+  --accent-green: #599c75;          /* Aged olive botanical ink */
+  --accent-blue: #5b92b5;           /* Slate storm blue ink */
+
+  /* Night-adapted sticky notes */
+  --sticky-yellow-bg: #3d2d1c;
+  --sticky-yellow-ink: #f2c779;
+  --sticky-yellow-border: #5a4228;
+
+  --sticky-pink-bg: #3c202a;
+  --sticky-pink-ink: #fca5a5;
+  --sticky-pink-border: #5c3140;
+
+  --sticky-blue-bg: #1f2e3d;
+  --sticky-blue-ink: #93c5fd;
+  --sticky-blue-border: #2c435a;
+
+  --sticky-green-bg: #1e3527;
+  --sticky-green-ink: #86efac;
+  --sticky-green-border: #2e533c;
+}
+
+/* RAINY EVENING (Cool wet slate, misty off-white paper, deep navy storm ink) */
+[data-theme="rainy-evening"] {
+  --paper-bg: #1a202c;              /* Cool wet window-sill slate */
+  --paper-surface: #e2e8f0;         /* Cool misty overcast paper */
+  --paper-surface-dim: #cbd5e1;     /* Wet cloud gray borders */
+  --paper-border: #94a3b8;          /* Cool zinc edge */
+  --paper-border-dim: #94a3b855;    /* Very faint rain-grid rules */
+  --ink-primary: #0f172a;           /* Intense midnight navy fountain pen ink */
+  --ink-secondary: #334155;         /* Overcast storm blue */
+  --ink-muted: #475569;             /* Slate mist gray */
+  --ink-light: #64748b;             /* Fog pencil outline */
+  --accent-red: #be123c;            /* Wild rose plum red */
+  --accent-gold: #d97706;           /* Warm lit fireplace amber */
+  --accent-green: #0f766e;          /* Damp pine green/teal */
+  --accent-blue: #2563eb;           /* Torrential storm blue */
+}
+
+/* FIREPLACE (Deep charcoal cozy embers, warm earthy terracotta paper) */
+[data-theme="fireplace"] {
+  --paper-bg: #130803;              /* Charred oak / cozy dark cabin desk */
+  --paper-surface: #3a1e12;         /* Warm earthy terracotta clay paper */
+  --paper-surface-dim: #2c150c;     /* Shadowed brick/ember margin */
+  --paper-border: #562e1c;          /* Toasted wood page edge */
+  --paper-border-dim: #4d2415;      /* Glowing ember ruling lines */
+  --ink-primary: #fbe9db;           /* Soft cream woodspark text */
+  --ink-secondary: #e0a98c;         /* Warm toasted chestnut */
+  --ink-muted: #a87154;             /* Hearth-shadow ash brown */
+  --ink-light: #784c35;             /* Faded pine-bark soot */
+  --accent-red: #f05a28;            /* Crackling hearth flame orange-red */
+  --accent-gold: #e3a835;           /* Radiant spark warm gold */
+  --accent-green: #599c75;          /* Forest fir branch green */
+  --accent-blue: #5b92b5;           /* High temperature gas flame cyan */
+
+  /* Fireplace-adapted sticky notes */
+  --sticky-yellow-bg: #4a2815;
+  --sticky-yellow-ink: #fdba74;
+  --sticky-yellow-border: #6d3a1e;
+
+  --sticky-pink-bg: #401f22;
+  --sticky-pink-ink: #fca5a5;
+  --sticky-pink-border: #632e33;
+
+  --sticky-blue-bg: #202433;
+  --sticky-blue-ink: #93c5fd;
+  --sticky-blue-border: #323a52;
+
+  --sticky-green-bg: #213020;
+  --sticky-green-ink: #86efac;
+  --sticky-green-border: #334a31;
+}
+
+/* COLLECTOR EDITION (Premium emerald library leather, heavy luxury ivory vellum) */
+[data-theme="collector-edition"] {
+  --paper-bg: #0f2e1e;              /* Imperial emerald royal bookbinding leather */
+  --paper-surface: #fffff4;         /* Premium vellum, extra smooth heavy cream */
+  --paper-surface-dim: #f9f9ea;     /* Silk-threaded book ribbon margin */
+  --paper-border: #e8dfbe;          /* Real gilt-edge metallic gold borders */
+  --paper-border-dim: #dfd5af;      /* Gold dust rule lines */
+  --ink-primary: #0e120f;           /* Deepest jade-infused black */
+  --ink-secondary: #283a2e;         /* Sovereign evergreen */
+  --ink-muted: #5c7263;             /* Gilded sage ink */
+  --ink-light: #89a291;             /* Faded silver-leaf graphite */
+  --accent-red: #9e1b32;            /* Luxurious imperial royal burgundy */
+  --accent-gold: #d4af37;           /* Bright polished 24k gold ribbon */
+  --accent-green: #124e3f;          /* Majestic dark forest green */
+  --accent-blue: #1b4f72;           /* Royal velvet sapphire blue */
+}
+
+/* LINED JOURNAL (Hand-ruled vintage leather notebook, pale ivory parchment, crimson lines) */
+[data-theme="lined-journal"] {
+  --paper-bg: #3a2212;              /* Warm hand-rubbed vintage brown leather cover */
+  --paper-surface: #faf6ee;         /* Soft hand-ruled pale ivory notebook page */
+  --paper-surface-dim: #f3ede0;     /* Shaded spine-crease parchment */
+  --paper-border: #e2d7c5;          /* Realistically shaded page edges */
+  --paper-border-dim: #d5c9b3;      /* Smudged graphite rule margins */
+  --ink-primary: #1c1816;           /* Midnight black fountain-pen ink */
+  --ink-secondary: #423b38;         /* Diluted carbon grey script */
+  --ink-muted: #786e68;             /* Pencil draft shadow outline */
+  --ink-light: #ab9f97;             /* Faded walnut grey */
+  --accent-red: #9e1b32;            /* Burgundy-red ledger margin rules */
+  --accent-gold: #c29738;           /* Burnished gold bookmark brass cap */
+  --accent-green: #2c5e43;          /* Dark library blotter spruce */
+  --accent-blue: #1b4f72;           /* Navy fountain pen ink */
+}
+
+
+/* -------------------------------------
+   4. ACCESSIBILITY OVERRIDES
+   ------------------------------------- */
+
+/* HIGH CONTRAST MODE (Pure blacks/whites, high readability outlines, flat shadows) */
+[data-contrast="high"] {
+  --paper-bg: #000000 !important;
+  --paper-surface: #ffffff !important;
+  --paper-surface-dim: #f8f9fa !important;
+  --paper-border: #000000 !important;
+  --paper-border-dim: #7f7f7f !important;
+  --ink-primary: #000000 !important;
+  --ink-secondary: #111111 !important;
+  --ink-muted: #333333 !important;
+  --ink-light: #555555 !important;
+  --accent-red: #d32f2f !important;
+  --accent-gold: #f57c00 !important;
+  --accent-green: #388e3c !important;
+  --accent-blue: #1976d2 !important;
+  
+  --shadow-paper-val: 0 0 0 2px #000000 !important;
+  --shadow-page-val: none !important;
+  --shadow-book-val: 0 0 0 4px #000000 !important;
+  --shadow-sticky-val: 0 0 0 1px #000000 !important;
+  --shadow-hover-val: 0 0 0 3px #000000 !important;
+  --shadow-depth-val: none !important;
+  
+  --focus-ring-outline: 3px solid #000000 !important;
+  --focus-ring-offset: 3px !important;
+}
+
+/* LARGE TEXT SCALE OVERRIDE (Magnified standard typography size layout) */
+[data-text-scale="large"] {
+  --size-display: 3.6rem !important;
+  --size-heading: 2.4rem !important;
+  --size-chapter: 1.8rem !important;
+  --size-body: 1.35rem !important;    /* 21.6px body copy for superb legibility */
+  --size-caption: 1.05rem !important;
+  --size-notes: 1.5rem !important;
+  --size-signature: 1.8rem !important;
+  --size-button: 1.05rem !important;
+  --size-label: 0.9rem !important;
+  --size-input: 1.2rem !important;
+}
+
+/* SYSTEM LEVEL REDUCED MOTION PREFERENCE */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0s !important;
+    --duration-normal: 0s !important;
+    --duration-slow: 0s !important;
+    --ease-paper: linear !important;
+    --ease-book: linear !important;
+    --ease-spring: linear !important;
+  }
+}
+
+/* DATA ATTRIBUTE MANUAL REDUCED MOTION */
+[data-reduced-motion="true"] {
+  --duration-fast: 0s !important;
+  --duration-normal: 0s !important;
+  --duration-slow: 0s !important;
+  --ease-paper: linear !important;
+  --ease-book: linear !important;
+  --ease-spring: linear !important;
+}
+
+
+/* -----------------------------------------------------
+   5. TAILWIND CSS V4 `@theme` CONFIGURATION DIRECTIVE
+   ----------------------------------------------------- */
+@theme {
+  /* Colors */
+  --color-paper-bg: var(--paper-bg);
+  --color-paper-surface: var(--paper-surface);
+  --color-paper-surface-dim: var(--paper-surface-dim);
+  --color-paper-border: var(--paper-border);
+  --color-paper-border-dim: var(--paper-border-dim);
+
+  --color-ink-primary: var(--ink-primary);
+  --color-ink-secondary: var(--ink-secondary);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-light: var(--ink-light);
+
+  --color-accent-red: var(--accent-red);
+  --color-accent-gold: var(--accent-gold);
+  --color-accent-green: var(--accent-green);
+  --color-accent-blue: var(--accent-blue);
+
+  --color-leather-bg-dark: var(--leather-bg-dark);
+  --color-leather-bg-light: var(--leather-bg-light);
+  --color-leather-border-gold: var(--leather-border-gold);
+  --color-leather-recessed-bg: var(--leather-recessed-bg);
+
+  --color-sticky-yellow-bg: var(--sticky-yellow-bg);
+  --color-sticky-yellow-ink: var(--sticky-yellow-ink);
+  --color-sticky-yellow-border: var(--sticky-yellow-border);
+
+  --color-sticky-pink-bg: var(--sticky-pink-bg);
+  --color-sticky-pink-ink: var(--sticky-pink-ink);
+  --color-sticky-pink-border: var(--sticky-pink-border);
+
+  --color-sticky-blue-bg: var(--sticky-blue-bg);
+  --color-sticky-blue-ink: var(--sticky-blue-ink);
+  --color-sticky-blue-border: var(--sticky-blue-border);
+
+  --color-sticky-green-bg: var(--sticky-green-bg);
+  --color-sticky-green-ink: var(--sticky-green-ink);
+  --color-sticky-green-border: var(--sticky-green-border);
+
+  --color-status-success: var(--status-success);
+  --color-status-success-bg: var(--status-success-bg);
+  --color-status-success-border: var(--status-success-border);
+  --color-status-error: var(--status-error);
+  --color-status-error-bg: var(--status-error-bg);
+  --color-status-error-border: var(--status-error-border);
+  --color-status-warning: var(--status-warning);
+  --color-status-warning-bg: var(--status-warning-bg);
+  --color-status-warning-border: var(--status-warning-border);
+  --color-status-info: var(--status-info);
+  --color-status-info-bg: var(--status-info-bg);
+  --color-status-info-border: var(--status-info-border);
+
+  /* Fonts */
+  --font-serif: var(--font-family-serif);
+  --font-sans: var(--font-family-sans);
+  --font-handwritten: var(--font-family-handwritten);
+  --font-playfair: var(--font-family-playfair);
+
+  /* Font Sizes */
+  --font-size-display: var(--size-display);
+  --font-size-heading: var(--size-heading);
+  --font-size-chapter: var(--size-chapter);
+  --font-size-body: var(--size-body);
+  --font-size-caption: var(--size-caption);
+  --font-size-notes: var(--size-notes);
+  --font-size-signature: var(--size-signature);
+  --font-size-button: var(--size-button);
+  --font-size-label: var(--size-label);
+  --font-size-input: var(--size-input);
+
+  /* Spacing */
+  --spacing-space-1: var(--space-1);
+  --spacing-space-2: var(--space-2);
+  --spacing-space-3: var(--space-3);
+  --spacing-space-4: var(--space-4);
+  --spacing-space-5: var(--space-5);
+  --spacing-space-6: var(--space-6);
+  --spacing-space-7: var(--space-7);
+  --spacing-space-8: var(--space-8);
+  --spacing-space-9: var(--space-9);
+  --spacing-space-10: var(--space-10);
+  --spacing-space-11: var(--space-11);
+  --spacing-space-12: var(--space-12);
+  --spacing-space-13: var(--space-13);
+  --spacing-space-14: var(--space-14);
+  --spacing-space-15: var(--space-15);
+  --spacing-space-16: var(--space-16);
+
+  /* Radii */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-paper: var(--radius-paper);
+  --radius-book: var(--radius-book);
+
+  /* Shadows */
+  --shadow-paper: var(--shadow-paper-val);
+  --shadow-page: var(--shadow-page-val);
+  --shadow-book: var(--shadow-book-val);
+  --shadow-sticky: var(--shadow-sticky-val);
+  --shadow-hover: var(--shadow-hover-val);
+  --shadow-depth: var(--shadow-depth-val);
+
+  /* Motion */
+  --animate-duration-fast: var(--duration-fast);
+  --animate-duration-normal: var(--duration-normal);
+  --animate-duration-slow: var(--duration-slow);
+  
+  --ease-paper: var(--ease-paper);
+  --ease-book: var(--ease-book);
+  --ease-spring: var(--ease-spring);
+
+  /* Z-indices */
+  --z-base: 0;
+  --z-page: 10;
+  --z-sticky: 9999;
+  --z-dialog: 10000;
+  --z-modal: 10100;
+  --z-tooltip: 10500;
+
+  --z-index-base: 0;
+  --z-index-page: 10;
+  --z-index-sticky: 9999;
+  --z-index-dialog: 10000;
+  --z-index-modal: 10100;
+  --z-index-tooltip: 10500;
+
+  /* Breakpoints */
+  --breakpoint-mobile: var(--breakpoint-mobile);
+  --breakpoint-tablet: var(--breakpoint-tablet);
+  --breakpoint-desktop: var(--breakpoint-desktop);
+  --breakpoint-wide: var(--breakpoint-wide);
+}

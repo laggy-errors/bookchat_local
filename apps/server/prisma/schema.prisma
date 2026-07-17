@@ -1,0 +1,432 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:/tmp/dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                   String                  @id @default(uuid())
+  email                String                  @unique
+  username             String?                 @unique
+  passwordHash         String?
+  googleId             String?                 @unique
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @updatedAt
+  deletedAt            DateTime?
+
+  profile              Profile?
+  sessions             Session[]
+  refreshTokens        RefreshToken[]
+  messages             Message[]
+  reactions            Reaction[]
+  bookmarks            Bookmark[]
+  receivedNotifications Notification[]         @relation("ReceivedNotifications")
+  sentNotifications    Notification[]          @relation("SentNotifications")
+  readerPresence       ReaderPresence?
+  readingProgresses    ReadingProgress[]
+  annotations          Annotation[]
+  quotes               Quote[]
+  auditLogs            AuditLog[]
+  conversations        ConversationParticipant[]
+  themePreference      ThemePreference?
+  bookMemberships      BookMembership[]
+  createdBooks         Book[]                  @relation("BookCreator")
+  grantsGranted        VisibilityGrant[]       @relation("GrantGranter")
+  grantsReceived       VisibilityGrant[]       @relation("GrantViewer")
+  grantsVisible        VisibilityGrant[]       @relation("GrantVisibleUser")
+  nicknameOverridesSet      NicknameOverride[] @relation("NicknameOwner")
+  nicknameOverridesReceived NicknameOverride[] @relation("NicknameTarget")
+
+  @@map("users")
+}
+
+model Profile {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  displayName String?
+  bio         String?
+  avatarUrl   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("profiles")
+}
+
+model Book {
+  id                String            @id @default(uuid())
+  title             String
+  author            String
+  description       String?
+  coverUrl          String?
+  isbn              String?
+  creatorId         String?
+  joinCode          String?           @unique
+  coverColor        String            @default("burgundy")
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  creator           User?             @relation("BookCreator", fields: [creatorId], references: [id], onDelete: SetNull)
+  conversations     Conversation[]
+  quotes            Quote[]
+  annotations       Annotation[]
+  readingProgresses ReadingProgress[]
+  readerPresence    ReaderPresence[]
+  bookmarks         Bookmark[]
+  memberships       BookMembership[]
+  visibilityGrants  VisibilityGrant[]
+  nicknameOverrides NicknameOverride[]
+
+  @@index([title])
+  @@index([joinCode])
+  @@map("books")
+}
+
+model Conversation {
+  id            String                    @id @default(uuid())
+  title         String
+  type          String                    @default("GROUP") // e.g. GROUP or DIRECT
+  bookId        String?                  
+  lastMessageAt DateTime                  @default(now())
+  createdAt     DateTime                  @default(now())
+  updatedAt     DateTime                  @updatedAt
+
+  book          Book?                     @relation(fields: [bookId], references: [id], onDelete: SetNull)
+  participants  ConversationParticipant[]
+  messages      Message[]
+  bookmarks     Bookmark[]
+
+  @@index([bookId])
+  @@index([bookId, title])
+  @@map("conversations")
+}
+
+model ConversationParticipant {
+  id             String       @id @default(uuid())
+  conversationId String      
+  userId         String      
+  joinedAt       DateTime     @default(now())
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  lastReadAt     DateTime     @default(now())
+
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, userId])
+  @@index([conversationId])
+  @@index([userId])
+  @@map("conversation_participants")
+}
+
+model Message {
+  id             String        @id @default(uuid())
+  conversationId String       
+  senderId       String       
+  content        String
+  messageType    String        @default("TEXT") // e.g. TEXT, INK
+  status         String        @default("SENT")
+  edited         Boolean       @default(false)
+  editedAt       DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  deletedAt      DateTime?
+  readAt         DateTime?
+  replyToId      String?
+
+  conversation   Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender         User          @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  replyTo        Message?      @relation("MessageReplies", fields: [replyToId], references: [id], onDelete: SetNull)
+  replies        Message[]     @relation("MessageReplies")
+  reactions      Reaction[]
+  attachments    Attachment[]
+  bookmarks      Bookmark[]
+
+  @@index([conversationId])
+  @@index([senderId])
+  @@index([replyToId])
+  @@index([conversationId, createdAt])
+  @@map("messages")
+}
+
+model Reaction {
+  id        String   @id @default(uuid())
+  messageId String  
+  userId    String  
+  emoji     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([messageId])
+  @@index([userId])
+  @@map("reactions")
+}
+
+model Attachment {
+  id        String   @id @default(uuid())
+  messageId String  
+  fileUrl   String
+  fileType  String
+  fileSize  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([messageId])
+  @@map("attachments")
+}
+
+model Bookmark {
+  id             String        @id @default(uuid())
+  userId         String  
+  bookId         String? 
+  messageId      String? 
+  conversationId String?
+  pageNumber     Int?
+  notes          String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book           Book?         @relation(fields: [bookId], references: [id], onDelete: SetNull)
+  message        Message?      @relation(fields: [messageId], references: [id], onDelete: SetNull)
+  conversation   Conversation? @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([bookId])
+  @@index([messageId])
+  @@index([conversationId])
+  @@map("bookmarks")
+}
+
+model Notification {
+  id         String             @id @default(uuid())
+  receiverId String            
+  senderId   String?           
+  type       String
+  title      String
+  preview    String
+  status     String             @default("CREATED")
+  read       Boolean            @default(false)
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+
+  receiver   User               @relation("ReceivedNotifications", fields: [receiverId], references: [id], onDelete: Cascade)
+  sender     User?              @relation("SentNotifications", fields: [senderId], references: [id], onDelete: SetNull)
+
+  @@index([receiverId])
+  @@index([senderId])
+  @@index([receiverId, read])
+  @@map("notifications")
+}
+
+model ReaderPresence {
+  id             String    @id @default(uuid())
+  userId         String    @unique
+  activeBookId   String?  
+  currentChapter String?
+  typing         Boolean   @default(false)
+  online         Boolean   @default(false)
+  lastSeen       DateTime  @default(now())
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activeBook     Book?     @relation(fields: [activeBookId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([activeBookId])
+  @@map("reader_presences")
+}
+
+model ReadingProgress {
+  id                String   @id @default(uuid())
+  userId            String  
+  bookId            String  
+  pagesRead         Int      @default(0)
+  chaptersCompleted Int      @default(0)
+  readingTime       Int      @default(0) // in minutes
+  lastOpened        DateTime @default(now())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book              Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, bookId])
+  @@index([userId])
+  @@index([bookId])
+  @@map("reading_progresses")
+}
+
+model Annotation {
+  id              String   @id @default(uuid())
+  userId          String  
+  bookId          String  
+  chapter         String?
+  pageNumber      Int?
+  highlightedText String?
+  notes           String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book            Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([bookId])
+  @@map("annotations")
+}
+
+model Quote {
+  id         String   @id @default(uuid())
+  userId     String  
+  bookId     String  
+  content    String
+  pageNumber Int?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book       Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([bookId])
+  @@map("quotes")
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String  
+  token     String   @unique
+  userAgent String?
+  ipAddress String?
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String  
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model ThemePreference {
+  id            String   @id @default(uuid())
+  userId        String   @unique
+  themeName     String   @default("Classic Library")
+  fontSize      String   @default("medium")
+  reducedMotion Boolean  @default(false)
+  highContrast  Boolean  @default(false)
+  largeText     Boolean  @default(false)
+  masterMute    Boolean  @default(false)
+  uiVolume      Float    @default(0.4)
+  writingVolume Float    @default(0.5)
+  ambienceVolume Float   @default(0.2)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("theme_preferences")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String? 
+  action    String
+  entity    String
+  entityId  String?
+  details   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@map("audit_logs")
+}
+
+model BookMembership {
+  id        String   @id @default(uuid())
+  bookId    String
+  userId    String
+  role      String   @default("MEMBER") // e.g., CREATOR, MEMBER
+  joinedAt  DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([bookId, userId])
+  @@index([bookId])
+  @@index([userId])
+  @@map("book_memberships")
+}
+
+model VisibilityGrant {
+  id            String   @id @default(uuid())
+  bookId        String
+  granterId     String
+  viewerId      String
+  visibleUserId String
+  createdAt     DateTime @default(now())
+
+  book          Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  granter       User     @relation("GrantGranter", fields: [granterId], references: [id], onDelete: Cascade)
+  viewer        User     @relation("GrantViewer", fields: [viewerId], references: [id], onDelete: Cascade)
+  visibleUser   User     @relation("GrantVisibleUser", fields: [visibleUserId], references: [id], onDelete: Cascade)
+
+  @@unique([bookId, viewerId, visibleUserId])
+  @@index([bookId])
+  @@index([viewerId])
+  @@index([visibleUserId])
+  @@map("visibility_grants")
+}
+
+model NicknameOverride {
+  id           String   @id @default(uuid())
+  ownerId      String
+  bookId       String
+  targetUserId String
+  nickname     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  owner        User     @relation("NicknameOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  targetUser   User     @relation("NicknameTarget", fields: [targetUserId], references: [id], onDelete: Cascade)
+  book         Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@unique([ownerId, bookId, targetUserId])
+  @@index([bookId])
+  @@index([ownerId])
+  @@index([targetUserId])
+  @@map("nickname_overrides")
+}
+
+

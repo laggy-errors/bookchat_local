@@ -1,0 +1,79 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=La+Belle+Aurore&family=Architects+Daughter&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-paper-bg);
+  color: var(--color-ink-primary);
+  font-family: var(--font-sans);
+}
+
+.font-book-serif {
+  font-family: var(--font-serif);
+}
+
+.font-book-sans {
+  font-family: var(--font-sans);
+}
+
+.font-book-playfair {
+  font-family: var(--font-playfair);
+}
+
+.font-book-handwritten {
+  font-family: var(--font-handwritten);
+}
+
+/* Lined paper rule gradient (dynamic color based on active theme) */
+.lined-paper {
+  background-size: 100% 2.2rem;
+  background-image: linear-gradient(to bottom, transparent 96%, var(--color-paper-border-dim) 96%);
+  line-height: 2.2rem;
+}
+
+/* Scrollbar customizations to look like paper spine gutter */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-paper-border);
+  border-radius: var(--radius-sm);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-ink-muted);
+}
+
+/* Animations for simulated fountain pen cursor */
+@keyframes write-pulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 0.2; }
+}
+
+.animate-write-pulse {
+  animation: write-pulse 1s infinite ease-in-out;
+}
+
+@keyframes highlight-flash {
+  0% {
+    background-color: rgba(227, 168, 53, 0.35);
+    box-shadow: 0 0 15px rgba(227, 168, 53, 0.3);
+    transform: scale(1.02);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: none;
+    transform: scale(1);
+  }
+}
+
+.animate-highlight-flash {
+  animation: highlight-flash 1.5s ease-out;
+  border-radius: var(--radius-md);
+}
+

@@ -1,0 +1,6 @@
+{
+  "name": "BookChat",
+  "description": "A premium digital hardcover book where readers communicate by writing inside beautiful pages.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
