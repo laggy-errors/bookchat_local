@@ -15,10 +15,10 @@ const nextConfig = {
         // destination: 'http://localhost:3001/api/:path*',
         destination: `${process.env.NEXT_PUBLIC_API_URL}/api/:path*`
       },
-      {
-        // source: '/socket.io/:path*',
-        // destination: 'http://localhost:3001/socket.io/:path*',
-      },
+      // {
+      //   // source: '/socket.io/:path*',
+      //   // destination: 'http://localhost:3001/socket.io/:path*',
+      // },
     ];
   },
 };
